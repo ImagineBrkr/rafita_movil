@@ -1,0 +1,7 @@
+**/logs**
+**/node_modules
+**/__pycache__
+**/.vscode
+**/migrations
+**/env**
+**/legacy
