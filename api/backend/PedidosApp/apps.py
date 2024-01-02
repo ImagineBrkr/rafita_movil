@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class PedidosappConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'PedidosApp'
+    name = 'backend.PedidosApp'

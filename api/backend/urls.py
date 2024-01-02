@@ -19,13 +19,17 @@ from rest_framework import routers
 
 from backend.SeguridadApp import views as seguridadViews
 from backend.ComprasApp import views as comprasViews
+from backend.PedidosApp import views as pedidosViews
 from rest_framework.authtoken.views import obtain_auth_token
 from backend.rafita import views as rafitaViews
 
 router = routers.DefaultRouter()
 router.register(r'users', seguridadViews.UserViewSet)
 router.register(r'groups', seguridadViews.GroupViewSet)
-router.register(r'proveedor', comprasViews.ProveedorViewSet)
+router.register(r'compras/proveedor', comprasViews.ProveedorViewSet)
+router.register(r'pedidos/platos', pedidosViews.PlatoViewSet)
+router.register(r'pedidos/clientes', pedidosViews.ClienteViewSet)
+router.register(r'pedidos/mesas', pedidosViews.MesaViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
