@@ -9,7 +9,7 @@ class PlatoSerializer(serializers.HyperlinkedModelSerializer):
 class MesaSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Mesa
-        fields = ['id', 'nombre']
+        fields = ['id', 'nombre', 'enUso', 'horaUltimoUso']
 
 class ClienteSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
