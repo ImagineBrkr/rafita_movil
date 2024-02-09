@@ -26,10 +26,19 @@ from backend.rafita import views as rafitaViews
 router = routers.DefaultRouter()
 router.register(r'users', seguridadViews.UserViewSet)
 router.register(r'groups', seguridadViews.GroupViewSet)
+
 router.register(r'compras/proveedor', comprasViews.ProveedorViewSet)
+# router.register(r'compras/insumos', comprasViews.InsumoViewSet)
+# router.register(r'compras/compras', comprasViews.CompraViewSet)
+# router.register(r'compras/detallecompras', comprasViews.DetalleCompraViewSet)
+
 router.register(r'pedidos/platos', pedidosViews.PlatoViewSet)
 router.register(r'pedidos/clientes', pedidosViews.ClienteViewSet)
 router.register(r'pedidos/mesas', pedidosViews.MesaViewSet)
+router.register(r'pedidos/pedidos', pedidosViews.PedidoViewSet)
+router.register(r'pedidos/detallepedidos', pedidosViews.DetallePedidoViewSet)
+
+# router.register(r'caja/aperturaCaja', )
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

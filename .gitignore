@@ -4,5 +4,6 @@
 **/.vscode
 **/migrations
 **/env**
+**/.env**
 **/legacy
 **/db.sqlite3

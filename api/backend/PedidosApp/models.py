@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -45,4 +46,23 @@ class Mesa(models.Model):
     def __str__(self):
         return self.nombre
     class Meta:
-        permissions = (("liberar_mesa", "Liberar mesa"),) 
+        permissions = (("liberar_mesa", "Liberar mesa"),)
+
+class Pedido(models.Model):
+    usuarioRegistra = models.ForeignKey(User, on_delete=models.CASCADE, related_name="usuarioRegistra")
+    Fecha = models.DateTimeField(auto_now_add = True)
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    mesa = models.ForeignKey(Mesa, on_delete=models.CASCADE, null = True)
+    pagado = models.BooleanField(default=False)
+    estado = models.BooleanField(default=True)
+
+class DetallePedido(models.Model):
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
+    plato = models.ForeignKey(Plato, on_delete=models.CASCADE)
+    cantidad = models.IntegerField()
+    indicaciones = models.CharField(max_length=50, blank = True)
+    precio = models.DecimalField(max_digits=4, decimal_places=2)
+    estado = models.BooleanField(default = True)
+
+    def total(self):
+        return self.precio * self.cantidad
