@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from PedidosApp.models import Pedido, Cliente
+from backend.PedidosApp.models import Pedido, Cliente
 
 # Create your models here.
 class AperturaCaja(models.Model):

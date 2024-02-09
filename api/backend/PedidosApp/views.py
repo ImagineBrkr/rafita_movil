@@ -1,8 +1,9 @@
 from .models import *
 from rest_framework import permissions, viewsets, filters
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-
+from django.http import Http404
 
 from .serializers import *
 
@@ -55,8 +56,30 @@ class MesaViewSet(viewsets.ModelViewSet):
             "deleted": True
         })
 
+    @action(detail=True, methods=['get'], url_path='obtener_pedido')
+    def obtener_pedido(self, request, pk=None):
+        mesa = self.get_object()
+        if mesa.enUso:
+            try:
+                pedido = Pedido.objects.filter(estado=True, mesa=pk).latest('Fecha')
+            except:
+                raise Http404
+        else:
+            raise Http404
+        return Response(data = PedidoSerializer(pedido).data)
+
+    @action(detail=True, methods=['get'], url_path='liberar_mesa')
+    def liberar_mesa(self, request, pk=None):
+        ocupar_liberar_mesa(pk, False)
+        return Response(self.get_serializer(self.get_object()).data)
+
+    @action(detail=True, methods=['get'], url_path='ocupar_mesa')
+    def ocupar_mesa(self, request, pk=None):
+        ocupar_liberar_mesa(pk, True)
+        return Response(self.get_serializer(self.get_object()).data)
+
 class PedidoViewSet(viewsets.ModelViewSet):
-    queryset = Pedido.objects.filter(estado=True)
+    queryset = Pedido.objects.filter(estado=True).order_by('-Fecha')
     serializer_class = PedidoSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]

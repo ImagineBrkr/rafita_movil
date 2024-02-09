@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'corsheaders',
 
     'backend.ComprasApp',
-    'backend.PedidosApp'
+    'backend.PedidosApp',
+    'backend.CajaApp'
 ]
 
 MIDDLEWARE = [

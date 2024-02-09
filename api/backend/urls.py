@@ -28,9 +28,9 @@ router.register(r'users', seguridadViews.UserViewSet)
 router.register(r'groups', seguridadViews.GroupViewSet)
 
 router.register(r'compras/proveedor', comprasViews.ProveedorViewSet)
-# router.register(r'compras/insumos', comprasViews.InsumoViewSet)
-# router.register(r'compras/compras', comprasViews.CompraViewSet)
-# router.register(r'compras/detallecompras', comprasViews.DetalleCompraViewSet)
+router.register(r'compras/insumos', comprasViews.InsumoViewSet)
+router.register(r'compras/compras', comprasViews.CompraViewSet)
+router.register(r'compras/detallecompras', comprasViews.DetalleCompraViewSet)
 
 router.register(r'pedidos/platos', pedidosViews.PlatoViewSet)
 router.register(r'pedidos/clientes', pedidosViews.ClienteViewSet)
