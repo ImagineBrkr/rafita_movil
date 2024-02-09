@@ -18,5 +18,5 @@ class AperturaCajaSerializer(serializers.ModelSerializer):
 class ComprobantePagoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ComprobantePago
-        fields = ['pedido', 'apertura', 'tipoPago', 'tipoComprobante', 'fecha', 'importeTotal']
-        read_only_fields = ['fecha', 'importeTotal']
+        fields = ['pedido', 'apertura', 'tipoPago', 'tipoComprobante', 'fecha', 'importeTotal', 'cliente']
+        read_only_fields = ['fecha']

@@ -6,9 +6,9 @@ from backend.PedidosApp.models import Pedido, Cliente
 class AperturaCaja(models.Model):
     cajero = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name="cajero")
     estadoApertura = models.BooleanField(default = True)
-    importeInicial = models.DecimalField(max_digits=5, decimal_places=2)
-    importe = models.DecimalField(max_digits=5, decimal_places=2, default = 0)
-    importeFinal = models.DecimalField(max_digits=5, decimal_places=2, null = True)
+    importeInicial = models.DecimalField(max_digits=10, decimal_places=2)
+    importe = models.DecimalField(max_digits=10, decimal_places=2, default = 0)
+    importeFinal = models.DecimalField(max_digits=10, decimal_places=2, null = True)
     fechaInicio = models.DateTimeField(auto_now_add = True)
     fechaCierre = models.DateTimeField(null = True)
 

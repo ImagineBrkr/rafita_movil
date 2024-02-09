@@ -1,7 +1,9 @@
 from .models import *
-from rest_framework import permissions, viewsets, filters
+from rest_framework import permissions, viewsets, filters, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from backend.CajaApp.models import ComprobantePago
+from backend.CajaApp.serializers import ComprobantePagoSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from django.http import Http404
 
@@ -99,6 +101,24 @@ class PedidoViewSet(viewsets.ModelViewSet):
             "id": pk,
             "deleted": True
         })
+    
+    @action(detail=True, methods=['post'], url_path='pagar_pedido')
+    def pagar_pedido(self, request, pk=None):
+        pedido = self.get_object()
+        importeTotal = pedido.total_pedido()
+        data = request.data.copy()
+        data['pedido'] = pedido.id
+        data['importeTotal'] = importeTotal
+        data['cliente'] = pedido.cliente.id
+    
+        serializer = ComprobantePagoSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            pedido.pagado = True
+            pedido.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class DetallePedidoViewSet(viewsets.ModelViewSet):
     queryset = DetallePedido.objects.filter(estado=True)

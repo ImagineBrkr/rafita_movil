@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Sum, F
 
 # Create your models here.
 
@@ -55,6 +56,11 @@ class Pedido(models.Model):
     mesa = models.ForeignKey(Mesa, on_delete=models.CASCADE, null = True)
     pagado = models.BooleanField(default=False)
     estado = models.BooleanField(default=True)
+    def total_pedido(self):
+        total = self.detallepedido_set.filter(estado=True).aggregate(
+            total=Sum(F('precio') * F('cantidad'), output_field=models.DecimalField())
+        )['total']
+        return total or 0
 
 class DetallePedido(models.Model):
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)

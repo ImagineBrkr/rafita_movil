@@ -20,6 +20,7 @@ from rest_framework import routers
 from backend.SeguridadApp import views as seguridadViews
 from backend.ComprasApp import views as comprasViews
 from backend.PedidosApp import views as pedidosViews
+from backend.CajaApp import views as cajaViews
 from rest_framework.authtoken.views import obtain_auth_token
 from backend.rafita import views as rafitaViews
 
@@ -38,7 +39,8 @@ router.register(r'pedidos/mesas', pedidosViews.MesaViewSet)
 router.register(r'pedidos/pedidos', pedidosViews.PedidoViewSet)
 router.register(r'pedidos/detallepedidos', pedidosViews.DetallePedidoViewSet)
 
-# router.register(r'caja/aperturaCaja', )
+router.register(r'caja/aperturaCaja', cajaViews.AperturaCajaViewSet)
+router.register(r'caja/comprobantePago', cajaViews.ComprobantePagoViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
