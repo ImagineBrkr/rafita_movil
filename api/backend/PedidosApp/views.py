@@ -10,7 +10,10 @@ from django.http import Http404
 from .serializers import *
 
 def ocupar_liberar_mesa(id_mesa, enUso):
-    mesa = Mesa.objects.get(id=id_mesa)
+    try:
+        mesa = Mesa.objects.get(id=id_mesa)
+    except Mesa.DoesNotExist:
+        raise Http404
     mesa.enUso = enUso
     mesa.save()
 
@@ -31,9 +34,12 @@ class ClienteViewSet(viewsets.ModelViewSet):
         })
 
 class PlatoViewSet(viewsets.ModelViewSet):
-    queryset = Plato.objects.filter(estado=True)
+    queryset = Plato.objects.filter(estado=True).order_by('nombre')
     serializer_class = PlatoSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['categoria']
+    search_fields = ['nombre']
 
     def destroy(self, request, pk=None):
         plato=Plato.objects.get(id=pk)
@@ -48,6 +54,8 @@ class MesaViewSet(viewsets.ModelViewSet):
     queryset = Mesa.objects.filter(estado=True)
     serializer_class = MesaSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['enUso']
 
     def destroy(self, request, pk=None):
         mesa=Mesa.objects.get(id=pk)
@@ -116,6 +124,7 @@ class PedidoViewSet(viewsets.ModelViewSet):
             serializer.save()
             pedido.pagado = True
             pedido.save()
+            ocupar_liberar_mesa(pedido.mesa.id, False)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -124,6 +133,8 @@ class DetallePedidoViewSet(viewsets.ModelViewSet):
     queryset = DetallePedido.objects.filter(estado=True)
     serializer_class = DetallePedidoSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['pedido']
 
     def destroy(self, request, pk=None):
         detallePedido=DetallePedido.objects.get(id=pk)

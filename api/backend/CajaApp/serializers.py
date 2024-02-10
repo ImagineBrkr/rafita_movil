@@ -16,6 +16,12 @@ class AperturaCajaSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
     
 class ComprobantePagoSerializer(serializers.ModelSerializer):
+
+    def validate_apertura(self, value):
+        if not value.estadoApertura:
+            raise serializers.ValidationError("La caja está cerrada.")
+        return value
+
     class Meta:
         model = ComprobantePago
         fields = ['pedido', 'apertura', 'tipoPago', 'tipoComprobante', 'fecha', 'importeTotal', 'cliente']

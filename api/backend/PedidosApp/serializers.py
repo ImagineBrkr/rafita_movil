@@ -26,6 +26,12 @@ class DetallePedidoSerializer(serializers.ModelSerializer):
     def get_total(self, obj):
         return obj.total()
 
+    def create(self, validated_data):
+        plato_id = validated_data['plato'].id
+        plato = Plato.objects.get(id=plato_id)
+        validated_data['precio'] = plato.precio
+        return super().create(validated_data)
+
 class PedidoSerializer(serializers.ModelSerializer):
     usuarioRegistra = serializers.PrimaryKeyRelatedField(
         read_only=True,

@@ -43,7 +43,7 @@ class ComprobantePagoViewSet(viewsets.ModelViewSet):
     queryset = ComprobantePago.objects.filter().order_by('-fecha')
     serializer_class = ComprobantePagoSerializer
     permission_classes = [permissions.IsAuthenticated]
-    http_method_names = ['get']
+    http_method_names = ['get', 'options', 'post']
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['tipoPago', 'tipoComprobante']
     search_fields = ['pedido', 'fecha', 'pedido__cliente__nombre']
