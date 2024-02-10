@@ -551,3 +551,241 @@ Modelo del detalle de los pedidos.
 #### Filter
 Se puede filtrar por:
 - 'pedido' ('/?pedido=1')
+
+## Compras
+
+### Proveedores
+Modelo de los proveedores.
+
+**ModelViewSet en '/compras/proveedor/'**
+
+```json
+{
+    "RUC": {
+        "type": "string",
+        "required": true,
+        "read_only": false,
+        "label": "RUC",
+        "max_length": 11
+    },
+    "razon_social": {
+        "type": "string",
+        "required": true,
+        "read_only": false,
+        "label": "Razon social",
+        "max_length": 45
+    },
+    "direccion": {
+        "type": "string",
+        "required": true,
+        "read_only": false,
+        "label": "Direccion",
+        "max_length": 45
+    },
+    "telefono": {
+        "type": "string",
+        "required": false,
+        "read_only": false,
+        "label": "Telefono",
+        "max_length": 10
+    },
+    "DNI_representante": {
+        "type": "string",
+        "required": true,
+        "read_only": false,
+        "label": "DNI representante",
+        "max_length": 8
+    }
+}
+```
+#### Search
+Se puede buscar por
+- 'razon_social' ('?search=Tienda')
+
+### Insumos
+Modelo de los insumos.
+
+**ModelViewSet en '/pedidos/insumos/'**
+
+```json
+{
+    "descripcion": {
+        "type": "string",
+        "required": true,
+        "read_only": false,
+        "label": "Descripcion",
+        "max_length": 40
+    },
+    "proveedor": {
+        "type": "field",
+        "required": true,
+        "read_only": false,
+        "label": "Proveedor"
+    },
+    "precio": {
+        "type": "decimal",
+        "required": true,
+        "read_only": false,
+        "label": "Precio"
+    },
+    "unidad_medida": {
+        "type": "choice",
+        "required": false,
+        "read_only": false,
+        "label": "Unidad medida",
+        "choices": [
+            {
+                "value": "U",
+                "display_name": "Unidades"
+            },
+            {
+                "value": "Kg",
+                "display_name": "Kilogramos"
+            },
+            {
+                "value": "L",
+                "display_name": "Litros"
+            }
+        ]
+    },
+    "stock": {
+        "type": "decimal",
+        "required": true,
+        "read_only": false,
+        "label": "Stock"
+    }
+}
+```
+#### Search
+Se puede buscar por
+- 'descripcion' ('?search=Arroz')
+
+### Compras
+Modelo de las compras.
+#### Comportamiento
+- Cada nueva compra aumenta la cantidad al stock de los insumos.
+- No se pueden editar ('PUT, PATCH'), pero sí eliminar.
+
+**ModelViewSet en '/pedidos/compras/'**
+
+```json
+{
+    "motivo": {
+        "type": "string",
+        "required": false,
+        "read_only": false,
+        "label": "Motivo",
+        "max_length": 200
+    },
+    "detalles": {
+        "type": "field",
+        "required": true,
+        "read_only": false,
+        "label": "Detalles",
+        "child": {
+            "type": "nested object",
+            "required": true,
+            "read_only": false,
+            "children": {
+                "insumo": {
+                    "type": "field",
+                    "required": true,
+                    "read_only": false,
+                    "label": "Insumo"
+                },
+                "cantidad": {
+                    "type": "integer",
+                    "required": true,
+                    "read_only": false,
+                    "label": "Cantidad",
+                    "min_value": -2147483648,
+                    "max_value": 2147483647
+                }
+            }
+        }
+    }
+}
+```
+#### Search
+Se puede buscar por
+- 'fecha' ('?search=2024-02-09')
+
+### DetalleCompra
+Modelo del detalle de las compras.
+#### Comportamiento
+- No se puede modificar (POST, PUT, PATCH, DELETE), solo leer (GET).
+
+**ModelViewSet en '/compras/detallecompras/'**
+
+#### Filter
+Se puede filtrar por:
+- 'compra' ('?compra=1)
+
+## Caja
+
+### Comportamiento
+El comportamiento es el siguiente:
+- Se abre la caja (aperturaCaja) por el cajero, se indica el importe inicial (importeInicial, e.g. 100 soles).
+- Cada vez que se paga un pedido, se genera un comprobantePago, este está asociado a una caja abierta (aperturaCaja, estadoApertura=True).
+- Al final del día se puede 'Cerrar la caja', se indica el importe final (importeFinal, e.g. 500 soles).
+- Se tiene además el campo 'importe' que indica la suma de todos los pedidos pagados (comprobantePago generado) asociados a la caja.
+
+### Clientes
+Modelo de la apertura de Caja.
+#### Comportamiento
+- Solo se puede aperturar la caja (POST) y leerla (GET), no modificar o eliminar.
+
+**ModelViewSet en '/caja/aperturaCaja/'**
+
+```json
+{
+    "importeInicial": {
+        "type": "decimal",
+        "required": true,
+        "read_only": false,
+        "label": "ImporteInicial"
+    }
+}
+```
+#### Search
+Se puede buscar por
+- fechaInicio ('?search=2024-02-09')
+
+#### Filter
+Se puede filtrar por:
+- 'cajero' ('?cajero=1')
+- 'estadoApertura' ('?estadoApertura=true')
+
+#### cerrar_caja
+Se usa para cerrar la caja aperturada (si no existe el pedido devuelve 404).
+- Si la caja ya está cerrada devuelve 400.
+- Calcula el importe de todos los comprobantes asociados a la apertura y los suma.
+- Request:
+```
+POST '/caja/aperturaCaja/1/cerrar_caja/'
+{
+    "importeFinal": {
+        "type": "decimal",
+        "required": false,
+        "read_only": true,
+        "label": "ImporteFinal"
+    }
+}
+```
+
+### ComprobantePago
+Modelo de los comprobantes de pago.
+
+**ModelViewSet en '/caja/comprobantePago/'**
+- Solo se pueden leer (GET), no modificar.
+- Para crearlos usar 'pagar_pedido' en pedidos.
+
+#### Search
+Se puede buscar por
+- 'pedido' ('?search=1')
+- 'fecha' ('?search=2024-02-09')
+
+#### Filter
+Se puede filtrar por:
+- 'tipoPago' ('?tipoPago=Efectivo)
+- 'tipoComprobante' ('?tipoComprobante=Boleta')

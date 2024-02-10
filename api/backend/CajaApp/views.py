@@ -12,9 +12,9 @@ class AperturaCajaViewSet(viewsets.ModelViewSet):
     queryset = AperturaCaja.objects.filter().order_by('-fechaInicio')
     serializer_class = AperturaCajaSerializer
     permission_classes = [permissions.IsAuthenticated]
-    http_method_names = ['get', 'post']
+    http_method_names = ['get', 'post', 'options']
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['cajero']
+    filterset_fields = ['cajero', 'estadoApertura']
     search_fields = ['fechaInicio']
     
     @action(detail=True, methods=['post'], url_path='cerrar_caja')
@@ -43,7 +43,7 @@ class ComprobantePagoViewSet(viewsets.ModelViewSet):
     queryset = ComprobantePago.objects.filter().order_by('-fecha')
     serializer_class = ComprobantePagoSerializer
     permission_classes = [permissions.IsAuthenticated]
-    http_method_names = ['get', 'options', 'post']
+    http_method_names = ['get', 'options']
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['tipoPago', 'tipoComprobante']
-    search_fields = ['pedido', 'fecha', 'pedido__cliente__nombre']
+    search_fields = ['pedido', 'fecha']
